@@ -1,0 +1,28 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // The voucher generator only ever touches these four paths. Access is
+    // open (no login screen exists in the app yet) so every staff member
+    // can read/write without signing in — but it is scoped so nothing
+    // outside these four paths can ever be touched, even by mistake or by
+    // a future change to the app.
+    match /products/{productId} {
+      allow read, write: if true;
+    }
+    match /locations/{locationId} {
+      allow read, write: if true;
+    }
+    match /bookings/{bookingId} {
+      allow read, write: if true;
+    }
+    match /settings/{settingId} {
+      allow read, write: if true;
+    }
+
+    // Deny everything else by default.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
